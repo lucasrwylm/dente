@@ -1,96 +1,151 @@
-import { StyleSheet, Text, View, Pressable, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Image, ScrollView } from 'react-native';
 import { Link } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+const servicos = [
+   { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+  { label: '', route: '/', icon: '' },
+];
 
 export default function HomeScreen() {
   return (
-    <ImageBackground
-      source={{ uri: 'https://i.pinimg.com/originals/e7/93/20/e793209158cce225d124ac8c6e810269.jpg' }}
-      style={styles.container}
-      resizeMode="cover"
-    >
-      <Text style={styles.title}>CARILNHOS ODONTOLOGIA</Text>
-      <Text style={styles.subtitle}>ODONTOLOGIA AO ALCANCE DE TODOS</Text>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Nome do App */}
+        <Text style={styles.title}>DENTINHO FELIZ</Text>
 
-      <View style={styles.menuContainer}>
-        <Link href="/Servicos" asChild>
-          <Pressable style={styles.menuButton}>
-            <Text style={styles.buttonText}>🦷 Serviços</Text>
-          </Pressable>
-        </Link>
+        {/* Quem Somos */}
+        <View style={styles.aboutCard}>
+          <MaterialCommunityIcons
+            name="book-open-outline"
+            size={40}
+            color="#ffffff"
+            style={styles.aboutIcon}
+          />
+          <Text style={styles.aboutTitle}>Quem somos?</Text>
+          <Text style={styles.aboutText}>
+            O aplicativo Dentinho Feliz foi desenvolvido especialmente para a comunidade de odontologia.
+            Aqui você sempre vai encontrar diversas informações, e um lugar especial para compartilhar conhecimentos.
+          </Text>
+        </View>
 
-        <Link href="/Agendametos" asChild>
-          <Pressable style={styles.menuButton}>
-            <Text style={styles.buttonText}>📅 Agendamentos</Text>
-          </Pressable>
-        </Link>
+        {/* Serviços */}
+        <View style={styles.servicosContainer}>
+          {servicos.map((item, index) => (
+            <Link key={index} href={item.route} asChild>
+              <Pressable style={styles.serviceCard}>
+                {item.icon && (
+                  <Image source={{ uri: item.icon }} style={styles.icon} resizeMode="contain" />
+                )}
+                <Text style={styles.serviceText}>{item.label}</Text>
+              </Pressable>
+            </Link>
+          ))}
+        </View>
+      </ScrollView>
 
-        <Link href="/Usuarios" asChild>
-          <Pressable style={styles.menuButton}>
-            <Text style={styles.buttonText}>👤 Usuários</Text>
-          </Pressable>
-        </Link>
+      {/* Barra inferior de navegação */}
+      <View style={styles.bottomBar}>
+        <MaterialCommunityIcons name="web" size={24} color="#6bb2b4" />
+        <MaterialCommunityIcons name="shopping-outline" size={24} color="#6bb2b4" />
+        <MaterialCommunityIcons name="book-outline" size={24} color="#6bb2b4" />
+        <MaterialCommunityIcons name="magnify" size={24} color="#6bb2b4" />
+        <MaterialCommunityIcons name="heart-outline" size={24} color="#6bb2b4" />
       </View>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Contato: (24) 4002-8922</Text>
-        <Text style={styles.footerText}>MinhaPica/Rj</Text>
-      </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
-    backgroundColor: 'rgba(0, 128, 128, 0.8)', 
-    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    justifyContent: 'space-between',
+  },
+  scrollContent: {
+    padding: 20,
     alignItems: 'center',
+    paddingBottom: 100,
   },
   title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: 28, // maior, mas não exagerado
+    fontWeight: '700',
+    color: '#6bb2b4',
+    marginBottom: 24,
     textAlign: 'center',
-    marginBottom: 4,
-    textTransform: 'uppercase',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#d0f0f7',
-    marginBottom: 40,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  menuContainer: {
     width: '100%',
-    gap: 20,
   },
-  menuButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingVertical: 18,
-    borderRadius: 8,
+  aboutCard: {
+    backgroundColor: '#6bb2b4',
+    borderRadius: 16,
+    padding: 24,
+    width: '90%',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#008bb5',
-    marginHorizontal: 20,
+    marginBottom: 32,
+  },
+  aboutIcon: {
+    marginBottom: 16,
+  },
+  aboutTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 12,
+  },
+  aboutText: {
+    color: '#e6fafa',
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  servicosContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  serviceCard: {
+    width: 100, // ideal para 3x3 em uma tela normal
+    height: 110,
+    marginBottom: 16,
+    marginHorizontal: 8,
+    backgroundColor: '#6bb2b4',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#007acc',
+  icon: {
+    width: 44,
+    height: 44,
+    tintColor: '#ffffff',
+    marginBottom: 8,
   },
-  footer: {
-    marginTop: 50,
-    alignItems: 'center',
-  },
-  footerText: {
-    color: '#e0f7fa',
+  serviceText: {
     fontSize: 13,
+    color: '#ffffff',
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  bottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+    height: 70,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    backgroundColor: '#ffffff',
   },
 });

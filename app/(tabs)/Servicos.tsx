@@ -4,7 +4,6 @@ import { StyleSheet, Text, FlatList, View, ImageBackground } from 'react-native'
 export default function ServicosScreen() {
   return (
     <ImageBackground
-      source={{ uri: 'https://i.pinimg.com/originals/e7/93/20/e793209158cce225d124ac8c6e810269.jpg' }}
       style={styles.container}
       resizeMode="cover"
     >

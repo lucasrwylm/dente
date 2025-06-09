@@ -1,13 +1,16 @@
 import { Agendamentos } from '@/constants/agendamentos';
-import { StyleSheet, Text, FlatList, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, FlatList, View, ImageBackground, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function AgendamentosScreen() {
+    const navigation = useNavigation();
   return (
+    
     <ImageBackground
-      source={{ uri: 'https://i.pinimg.com/originals/e7/93/20/e793209158cce225d124ac8c6e810269.jpg' }}
       style={styles.container}
       resizeMode="cover"
     >
+
       <Text style={styles.title}>📅 Agendamentos</Text>
 
       <View style={styles.table}>
@@ -38,6 +41,11 @@ export default function AgendamentosScreen() {
 }
 
 const styles = StyleSheet.create({
+    voltar: {
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 10
+  },
   container: {
     flex: 1,
     padding: 20,

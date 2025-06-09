@@ -1,33 +1,71 @@
-import { Usuarios } from '@/constants/usuarios';
-import { StyleSheet, Text, FlatList, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, FlatList, View, ImageBackground, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
 
-export default function UsuariosScreen() {
+type User = {
+  id_usuario: number;
+  id_grupo: number;
+  data_de_nascimento: string;
+  nome_usuario: string;
+  nome_grupo: string;
+  email: string;
+};
+
+export default function ListaUsuarios() {
+  const [users, setUsers] = useState<User[] | null>(null);
+
+  useEffect(() => {
+    const getUsuarios = async () => {
+      try {
+        const response = await fetch('http://192.168.0.100/agendamentos/usuarios'); // Use o IP da sua máquina
+        const data = await response.json();
+        console.log('Resposta da API:', data);
+
+        // Verifique se "usuarios" existe e é um array
+        if (Array.isArray(data.usuarios)) {
+          setUsers(data.usuarios);
+        } else {
+          console.warn('Formato de resposta inesperado:', data);
+          setUsers([]); // Evita erros de undefined
+        }
+      } catch (error) {
+        console.error('Erro ao buscar usuários:', error);
+        setUsers([]); // Evita loop de loading eterno
+      }
+    };
+
+    getUsuarios();
+  }, []);
+
   return (
     <ImageBackground
-      source={{ uri: 'https://i.pinimg.com/originals/e7/93/20/e793209158cce225d124ac8c6e810269.jpg' }}
       style={styles.container}
       resizeMode="cover"
     >
-      <Text style={styles.title}>👤 Perfis de usuarios</Text>
+      <Text style={styles.title}>👤 Perfis de Usuários</Text>
 
       <View style={styles.table}>
-        {/* Cabeçalho da tabela */}
         <View style={[styles.row, styles.headerRow]}>
           <Text style={styles.headerCell}>Nome</Text>
           <Text style={styles.headerCell}>Grupo</Text>
         </View>
 
-        {/* Lista de usuários */}
-        <FlatList
-          data={Usuarios()}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.row}>
-              <Text style={styles.cell}>{item.nome}</Text>
-              <Text style={styles.cell}>{item.nome_grupo}</Text>
-            </View>
-          )}
-        />
+        {/* Lista de usuários ou indicador de carregamento */}
+        {users === null ? (
+          <ActivityIndicator size="large" color="#007acc" style={{ marginTop: 20 }} />
+        ) : (
+          <FlatList
+            data={users}
+            keyExtractor={(item, index) =>
+              item?.id_usuario?.toString() ?? `user-${index}`
+            }
+            renderItem={({ item }) => (
+              <View style={styles.row}>
+                <Text style={styles.cell}>{item.nome_usuario}</Text>
+                <Text style={styles.cell}>{item.nome_grupo}</Text>
+              </View>
+            )}
+          />
+        )}
       </View>
     </ImageBackground>
   );
