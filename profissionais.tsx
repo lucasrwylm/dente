@@ -41,7 +41,7 @@ export default function ListaUsuarios() {
       style={styles.container}
       resizeMode="cover"
     >
-      <Text style={styles.title}>👤 Perfis de Usuários</Text>
+      <Text style={styles.title}>Profissionais </Text>
 
       <View style={styles.table}>
         <View style={[styles.row, styles.headerRow]}>
