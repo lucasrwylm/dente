@@ -5,7 +5,7 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 
 type User = {
   id_usuario: number;
-  nome_usuario: string;
+  nome: string;
 };
 
 export default function CadastroUsuario() {
@@ -45,7 +45,7 @@ export default function CadastroUsuario() {
   useEffect(() => {
     const getUsuarios = async () => {
       try {
-        const response = await fetch('http://localhost/agendamentos/usuarios-profissional');
+        const response = await fetch('http://localhost/agendamentos/profissionais');
         const data = await response.json();
         setUsers(data.usuarios || []);
       } catch (error) {
@@ -106,7 +106,7 @@ export default function CadastroUsuario() {
           >
             <Picker.Item label="Selecione um profissional" value="" />
             {users.map((user) => (
-              <Picker.Item key={user.id_usuario} label={user.nome_usuario} value={user.id_usuario} />
+              <Picker.Item key={user.id_usuario} label={user.nome} value={user.id_usuario} />
             ))}
           </Picker>
         </View>
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0, 128, 128, 0.85)',
+    backgroundColor: '#6bb2b4',
   },
   form: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',

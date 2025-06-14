@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Pressable, Image, ScrollView } from 'react-native';
-import { Link } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const servicos = [
    { label: '', route: '/', icon: '' },
@@ -50,15 +50,6 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
-
-      {/* Barra inferior de navegação */}
-      <View style={styles.bottomBar}>
-        <MaterialCommunityIcons name="web" size={24} color="#6bb2b4" />
-        <MaterialCommunityIcons name="shopping-outline" size={24} color="#6bb2b4" />
-        <MaterialCommunityIcons name="book-outline" size={24} color="#6bb2b4" />
-        <MaterialCommunityIcons name="magnify" size={24} color="#6bb2b4" />
-        <MaterialCommunityIcons name="heart-outline" size={24} color="#6bb2b4" />
-      </View>
     </View>
   );
 }

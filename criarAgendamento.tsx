@@ -1,13 +1,13 @@
 import { Picker } from '@react-native-picker/picker';
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 type User = {
     id_usuario: number;
     id_grupo: number;
     data_de_nascimento: string;
-    nome_usuario: string;
+    nome: string;
     nome_grupo: string;
     email: string;
 };
@@ -19,13 +19,7 @@ type Servico = {
 };
 
 const dia_semana = [
-    'Domingo',
-    'Segunda-feira',
-    'Terça-feira',
-    'Quarta-feira',
-    'Quinta-feira',
-    'Sexta-feira',
-    'Sábado'
+    'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'
 ];
 
 export function MountarAgendamentos({ agendamentos, id_usuario, id_servico, data }) {
@@ -34,14 +28,14 @@ export function MountarAgendamentos({ agendamentos, id_usuario, id_servico, data
     const reservar = async (id_agenda: number) => {
         const dados = { id_agenda, id_usuario, id_servico, data };
         try {
-            const response = await fetch('http://localhost/agendamentos/criar-agendamento', {
+            const response = await fetch('http://localhost/agendamentos/createAgendamento', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados),
             });
 
             if (response.ok) {
-                router.push('agendamento');
+                router.push('/(tabs)/Agendametos');
             } else {
                 const errorText = await response.text();
                 console.error('Erro ao salvar:', errorText);
@@ -59,12 +53,12 @@ export function MountarAgendamentos({ agendamentos, id_usuario, id_servico, data
             keyExtractor={(item) => item.id_agenda.toString()}
             renderItem={({ item }) => (
                 <View style={styles.card}>
-                    <Text>Profissional: {item.usuario?.nome_usuario}</Text>
-                    <Text>Dia da semana: {dia_semana[item.dia_da_semana]}</Text>
-                    <Text>Horário: {item.horario}</Text>
-                    <View style={{ margin: 10 }}>
-                        <Button title="Reservar" onPress={() => reservar(item.id_agenda)} />
-                    </View>
+                    <Text style={styles.cardText}>Profissional: {item.usuario?.nome_usuario}</Text>
+                    <Text style={styles.cardText}>Dia da semana: {dia_semana[item.dia_da_semana]}</Text>
+                    <Text style={styles.cardText}>Horário: {item.horario}</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => reservar(item.id_agenda)}>
+                        <Text style={styles.buttonText}>Reservar</Text>
+                    </TouchableOpacity>
                 </View>
             )}
         />
@@ -85,7 +79,7 @@ export default function FormularioAgendamento() {
     useEffect(() => {
         const getUsuarios = async () => {
             try {
-                const response = await fetch('http://localhost/agendamentos/usuarios-clientes');
+                const response = await fetch('http://localhost/agendamentos/cliente');
                 const data = await response.json();
                 setUsers(data.usuarios || []);
             } catch (error) {
@@ -99,7 +93,7 @@ export default function FormularioAgendamento() {
     useEffect(() => {
         const getServicos = async () => {
             try {
-                const response = await fetch('http://localhost/agendamentos/get-servicos');
+                const response = await fetch('http://localhost/agendamentos/servicos');
                 const data = await response.json();
                 setServicos(data.servicos || []);
             } catch (error) {
@@ -134,91 +128,138 @@ export default function FormularioAgendamento() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.label}>Data do Agendamento:</Text>
-            <TextInput
-                style={styles.input}
-                value={form.data}
-                onChangeText={(text) => setForm({ ...form, data: text })}
-                placeholder="YYYY-MM-DD"
-            />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.form}>
+                <Text style={styles.title}>Novo Agendamento</Text>
 
-            <Text style={styles.label}>Cliente:</Text>
-            <Picker
-                selectedValue={form.cliente}
-                onValueChange={(itemValue) => setForm({ ...form, cliente: itemValue })}
-                style={styles.input}
-            >
-                <Picker.Item label="Selecione um cliente" value="" />
-                {users.map((cliente) => (
-                    <Picker.Item
-                        key={cliente.id_usuario}
-                        label={cliente.nome_usuario}
-                        value={cliente.id_usuario}
-                    />
-                ))}
-            </Picker>
+                <Text style={styles.label}>Data do Agendamento</Text>
+                <TextInput
+                    style={styles.input}
+                    value={form.data}
+                    onChangeText={(text) => setForm({ ...form, data: text })}
+                    placeholder="YYYY-MM-DD"
+                    placeholderTextColor="#aaa"
+                />
 
-            <Text style={styles.label}>Serviço:</Text>
-            <Picker
-                selectedValue={form.servico}
-                onValueChange={(itemValue) => setForm({ ...form, servico: itemValue })}
-                style={styles.input}
-            >
-                <Picker.Item label="Selecione um serviço" value="" />
-                {servicos.map((servico) => (
-                    <Picker.Item
-                        key={servico.id_servico}
-                        label={servico.nome_servico}
-                        value={servico.id_servico}
-                    />
-                ))}
-            </Picker>
+                <Text style={styles.label}>Cliente</Text>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        selectedValue={form.cliente}
+                        onValueChange={(itemValue) => setForm({ ...form, cliente: itemValue })}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Selecione um cliente" value="" />
+                        {users.map((cliente) => (
+                            <Picker.Item key={cliente.id_usuario} label={cliente.nome} value={cliente.id_usuario} />
+                        ))}
+                    </Picker>
+                </View>
 
-            <View style={{ marginTop: 20 }}>
-                <Button title="Continuar" onPress={handleSubmit} />
+                <Text style={styles.label}>Serviço</Text>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        selectedValue={form.servico}
+                        onValueChange={(itemValue) => setForm({ ...form, servico: itemValue })}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Selecione um serviço" value="" />
+                        {servicos.map((servico) => (
+                            <Picker.Item key={servico.id_servico} label={servico.nome_servico} value={servico.id_servico} />
+                        ))}
+                    </Picker>
+                </View>
+
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                    <Text style={styles.buttonText}>Continuar</Text>
+                </TouchableOpacity>
+
+                {agendamentos.length > 0 && (
+                    <>
+                        <Text style={[styles.label, { marginTop: 20 }]}>Horários disponíveis:</Text>
+                        <MountarAgendamentos
+                            agendamentos={agendamentos}
+                            id_usuario={form.cliente}
+                            id_servico={form.servico}
+                            data={form.data}
+                        />
+                    </>
+                )}
+
+                {agendamentos.length === 0 && (
+                    <Text style={[styles.label, { marginTop: 20 }]}>Nenhum profissional com agenda disponível na data selecionada.</Text>
+                )}
             </View>
-
-            {agendamentos.length > 0 && (
-                <>
-                    <Text style={{ fontWeight: 'bold', marginTop: 20 }}>Horário de Agendamentos disponíveis:</Text>
-                    <MountarAgendamentos agendamentos={agendamentos} id_usuario={form.cliente} id_servico={form.servico} data={form.data} />
-                </>
-            )}
-            {agendamentos.length == 0 && (
-                <>
-                    <Text style={{ fontWeight: 'bold', marginTop: 20 }}>Não profissional com agenda disponível para a data:</Text>
-                </>
-            )}
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
         padding: 20,
-        marginTop: 40,
-        backgroundColor:'white'
+        backgroundColor: '#6bb2b4',
+    },
+    form: {
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: 12,
+        padding: 20,
+        elevation: 3,
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#007acc',
+        textAlign: 'center',
+        marginBottom: 16,
     },
     label: {
-        marginTop: 20,
-        fontWeight: 'bold',
+        fontSize: 14,
+        color: '#333',
+        marginBottom: 6,
+        fontWeight: '600',
     },
     input: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        paddingVertical: 5,
-        marginRight: 10,
+        borderWidth: 1,
+        borderColor: '#b3d9ff',
+        backgroundColor: '#f9f9f9',
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 12,
+    },
+    pickerContainer: {
+        borderWidth: 1,
+        borderColor: '#b3d9ff',
+        borderRadius: 8,
+        backgroundColor: '#f9f9f9',
+        marginBottom: 12,
+    },
+    picker: {
+        height: 50,
+        width: '100%',
+    },
+    button: {
+        backgroundColor: '#00cc99',
+        padding: 12,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 16,
     },
     card: {
-        backgroundColor: 'white',
+        backgroundColor: '#ffffff',
         padding: 15,
         marginVertical: 8,
         borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        elevation: 2,
+        borderColor: '#ddd',
+        borderWidth: 1,
+    },
+    cardText: {
+        color: '#333'
     },
 });

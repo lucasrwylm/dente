@@ -1,6 +1,6 @@
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type Agenda = {
   id_agenda: number;
@@ -68,7 +68,7 @@ export default function ListaAgendas() {
         <Text style={styles.link}>➕ Criar Agenda</Text>
       </Link>
 
-      <View style={styles.table}>
+      <ScrollView style={styles.table}>
         <View style={[styles.row, styles.headerRow]}>
           <Text style={styles.headerCell}>ID</Text>
           <Text style={styles.headerCell}>Profissional</Text>
@@ -92,7 +92,7 @@ export default function ListaAgendas() {
             )}
           />
         )}
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'rgba(0, 128, 128, 0.85)',
+    backgroundColor: '#6bb2b4',
     justifyContent: 'center',
   },
   title: {

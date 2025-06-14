@@ -124,7 +124,7 @@ export default function CadastroUsuario() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'rgba(0, 128, 128, 0.85)'
+    backgroundColor:'#6bb2b4'
   },
   scrollContent: {
     flexGrow: 1,

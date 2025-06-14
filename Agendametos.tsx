@@ -5,7 +5,7 @@ import { ActivityIndicator, FlatList, ImageBackground, StyleSheet, Text, View } 
 type Agendamento = {
   id_agendamento: number;
   data: string;
-  hora: string;
+  horario?: string;
   nome_cliente: string;
   nome_profissional: string;
 };
@@ -52,9 +52,9 @@ export default function AgendamentosScreen() {
             renderItem={({ item }) => (
               <View style={styles.row}>
                 <Text style={styles.cell}>{item.data}</Text>
-                <Text style={styles.cell}>{item.agenda.horario}</Text>
-                <Text style={styles.cell}>{item.usuario.nome}</Text>
-                <Text style={styles.cell}>{item.agenda.usuario.nome}</Text>
+                <Text style={styles.cell}>{item.agenda?.horario}</Text>
+                <Text style={styles.cell}>{item.usuario?.nome}</Text>
+                <Text style={styles.cell}>{item.agenda?.usuario.nome}</Text>
               </View>
             )}
           />
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'rgba(0, 128, 128, 0.85)',
+    backgroundColor: '#6bb2b4',
     justifyContent: 'center',
   },
   title: {
